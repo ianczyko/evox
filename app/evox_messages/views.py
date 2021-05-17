@@ -1,3 +1,17 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+
+def messages(request):
+    return HttpResponse('Return all messages')
+
+
+def message_edit(request, id: int):
+    return HttpResponse(f'Edit message with id={id}')
+
+
+def message_delete(request, id: int):
+    return HttpResponse(f'Edit message with id={id}')
+
+
+def message_new(request):
+    return HttpResponse('Create new message')
