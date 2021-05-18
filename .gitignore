@@ -1,3 +1,8 @@
+# Additional config
+.vscode/
+
+# Config below is a GitHub's template.
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
