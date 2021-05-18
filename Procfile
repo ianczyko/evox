@@ -1,1 +1,1 @@
-web: gunicorn app.evox.wsgi --log-file -
+web: cd app && gunicorn evox.wsgi --log-file -
