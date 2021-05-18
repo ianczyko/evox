@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+
+class Message(models.Model):
+    content = models.CharField(max_length=160)
+    view_count = models.IntegerField(default=0)
+    # id is added automatically
