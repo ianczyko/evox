@@ -1,7 +1,6 @@
 from django.forms import model_to_dict
 from django.db.models import F
 from django.http.response import JsonResponse
-from django.core.exceptions import ValidationError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework import status
@@ -39,11 +38,8 @@ def message_edit(request, id: int):
     message = Message.objects.get(pk=id)
     message.content = message_content
     message.view_count = 0
-    try:
-        message.clean_fields()
-    except ValidationError as e:
-        error_msg = {'detail': 'Malformed message. Parser output: '}
-        error_msg['detail'] += e.message_dict['content'][0]
+    error_msg = message.validate_message()
+    if error_msg:
         return Response(error_msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     message.save()
     output = model_to_dict(message)
@@ -64,11 +60,8 @@ def message_delete(request, id: int):
 def message_new(request):
     message_content = request.body.decode('utf-8')
     message = Message(content=message_content)
-    try:
-        message.clean_fields()
-    except ValidationError as e:
-        error_msg = {'detail': 'Malformed message. Parser output: '}
-        error_msg['detail'] += e.message_dict['content'][0]
+    error_msg = message.validate_message()
+    if error_msg:
         return Response(error_msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     message.save()
     output = model_to_dict(message)
