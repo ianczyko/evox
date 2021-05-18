@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from evox_messages.views import (
-    messages,
+    message_show,
     message_edit,
     message_new,
     message_delete
@@ -24,8 +24,8 @@ from evox_messages.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/messages/new', message_new),
-    path('api/messages/<int:id>/edit', message_edit),
-    path('api/messages/<int:id>/delete', message_delete),
-    path('api/messages/', messages),
+    path('api/message/new', message_new),
+    path('api/message/<int:id>/edit', message_edit),
+    path('api/message/<int:id>/delete', message_delete),
+    path('api/message/<int:id>', message_show),
 ]
