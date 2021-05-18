@@ -9,6 +9,16 @@ from rest_framework.response import Response
 from evox_messages.models import Message
 
 
+@api_view(['GET', 'PUT', 'DELETE'])
+def message_dispatcher(request, id: int):
+    if request.method == 'GET':
+        return message_show(request._request, id)
+    if request.method == 'PUT':
+        return message_edit(request._request, id)
+    if request.method == 'DELETE':
+        return message_delete(request._request, id)
+
+
 @api_view(['GET'])
 def message_show(request, id: int):
     message = Message.objects.get(pk=id)
