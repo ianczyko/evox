@@ -1,6 +1,8 @@
 from django.forms import model_to_dict
 from django.db.models import F
 from django.http.response import JsonResponse
+from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework import status
@@ -20,7 +22,10 @@ def message_dispatcher(request, id: int):
 
 @api_view(['GET'])
 def message_show(request, id: int):
-    message = Message.objects.get(pk=id)
+    try:
+        message = Message.retrieve_by_id(id)
+    except ObjectDoesNotExist as e:
+        return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     # Save and return message before updating:
     # Needed due to the use of F expression
     # Pros: atomic incrementation, resolved race conditions
@@ -35,12 +40,17 @@ def message_show(request, id: int):
 @permission_classes([HasAPIKey])
 def message_edit(request, id: int):
     message_content = request.body.decode('utf-8')
-    message = Message.objects.get(pk=id)
+    try:
+        message = Message.retrieve_by_id(id)
+    except ObjectDoesNotExist as e:
+        return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     message.content = message_content
     message.view_count = 0
-    error_msg = message.validate_message()
-    if error_msg:
-        return Response(error_msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    try:
+        message.validate_message()
+    except ValidationError as e:
+        err_msg = e.message_dict['content'][0]
+        return Response(err_msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     message.save()
     output = model_to_dict(message)
     return JsonResponse(output)
@@ -49,7 +59,10 @@ def message_edit(request, id: int):
 @api_view(['DELETE'])
 @permission_classes([HasAPIKey])
 def message_delete(request, id: int):
-    message = Message.objects.get(pk=id)
+    try:
+        message = Message.retrieve_by_id(id)
+    except ObjectDoesNotExist as e:
+        return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     output = model_to_dict(message)
     message.delete()
     return JsonResponse(output)
@@ -60,9 +73,11 @@ def message_delete(request, id: int):
 def message_new(request):
     message_content = request.body.decode('utf-8')
     message = Message(content=message_content)
-    error_msg = message.validate_message()
-    if error_msg:
-        return Response(error_msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    try:
+        message.validate_message()
+    except ValidationError as e:
+        err_msg = e.message_dict['content'][0]
+        return Response(err_msg, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     message.save()
     output = model_to_dict(message)
     return JsonResponse(output)

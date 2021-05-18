@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 
 
 class Message(models.Model):
@@ -8,12 +7,9 @@ class Message(models.Model):
     # id is added automatically
 
     def validate_message(self):
-        try:
-            self.clean_fields()
-            error_msg = None
-        except ValidationError as e:
-            p_output = e.message_dict['content'][0]
-            error_msg = {
-                'detail': f'Malformed message. Parser output: {p_output}'
-            }
-        return error_msg
+        self.clean_fields()
+
+    @classmethod
+    def retrieve_by_id(cls, id: int):
+        message = cls.objects.get(pk=id)
+        return message
