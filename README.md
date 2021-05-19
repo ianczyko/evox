@@ -1,1 +1,114 @@
-# evox
+# EVOX
+
+API do tworzenia, modyfikowania oraz wyświetlania wiadomości wraz z ich licznikiem wyświetleń.
+
+## Instalacja i uruchomienie
+
+### Instalacja
+
+ 
+
+``` shell
+sudo apt install -y python3 python3-pip
+pip3 install -r requirements.txt
+```
+
+Wersja alternatywna, wykorzystująca pipenv:
+
+``` shell
+cd app
+pipenv installl --dev
+```
+
+### Uruchomienie
+
+Lokalne uruchomienie na [localhost:8000](http://localhost:8000/)
+
+``` shell
+python3 manage.py runserver
+```
+
+## API
+
+### Lista endpointów
+
+| Metoda HTTP   | Wymaga uwierzytelnienia   | URL                       | Funkcjonalność            |
+| ------------- | -------------             | -------------             | -------------             |
+| POST          | TAK                       | `/api/messages/`          | Dodanie nowej wiadomości  |
+| PUT           | TAK                       | `/api/messages/<int:id>`  | Modyfikacja wiadomości    |
+| DELETE        | TAK                       | `/api/messages/<int:id>`  | Usunięcie wiadomości      |
+| GET           | NIE                       | `/api/messagess/<int:id>` | Odczyt wiadomości         |
+
+### Format zapytań i odpowiedzi
+
+Zapytania modyfikujące wiadomość (widok utworzenia, edycji i usunięcia wiadomości) muszą zawierać Wiadomość czyli umieszczony w BODY niepusty string o maksymalnym rozmiarze 160 znaków. Wykorzustując *curl*, wiadomość może zostać przekazana poprzez: `--data-raw 'Treść wiadomości'`
+
+Każde poprawne zapytanie zwraca odpowiedź w formacie json zawierającą następujące pola:
+
+``` json
+{
+    "id": 1,
+    "content": "Treść wiadomości",
+    "view_count": 25
+}
+```
+
+### Uwierzytelnienie
+
+Aby korzystać z modyfikujących wiadomości widoków należy posiadać `API key` . Należy zamieścić go w headerze w następujący sposób:
+
+``` json
+{
+    "Authorization": "Api-Key <API_KEY>"
+}
+```
+
+`API key` są generowane z panelu administratora, może ich być wiele, oraz można każdemu przypisać czas wygaśnięcia.
+
+## Deployment
+
+Serwer produkcyjny dla tej aplikacji znajduje się pod adresem [ianczyko-evox.herokuapp.com](https://ianczyko-evox.herokuapp.com/ )
+
+> Uwaga, serwer jest usypiany po 30 minutowej bezczynności, dlatego pierwsze zapytanie może potrwać chwilę dłużej.
+
+### CI/CD
+
+Deployment jest ustawiony na automatyczny, po wypchnięciu zmian na to repozytorium zdalne i po pomyślnym przejściu testów jednostkowych w CI GitHub Actions, Heroku buduje aplikację i podmienia z aktualnie działającą (pozostawiając bazę danych nienaruszoną).
+
+## Przykłady użycia API
+
+Przykłady będą wykorzystywać serwer produkcyjny.
+
+### Odczyt wiadomości
+
+``` shell
+curl --location --request GET 'https://ianczyko-evox.herokuapp.com/api/messages/1'
+```
+Lub wyświetlając link w przeglądarce: [ianczyko-evox.herokuapp.com/api/messages/1](https://ianczyko-evox.herokuapp.com/api/messages/1)
+
+### Utworzenie wiadomości
+
+``` shell
+curl --location --request POST 'https://ianczyko-evox.herokuapp.com/api/messages/' \
+--header 'Authorization: Api-Key <API_KEY>' \
+--header 'Content-Type: text/plain' \
+--data-raw 'New message content!'
+```
+
+### Modyfikacja wiadomości
+
+``` shell
+curl --location --request PUT 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>' \
+--header 'Authorization: Api-Key <API_KEY>' \
+--header 'Content-Type: text/plain' \
+--data-raw 'Message content update!'
+```
+
+### Usunięcie wiadomości
+
+``` shell
+curl --location --request DELETE 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>' \
+--header 'Authorization: Api-Key <API_KEY>' \
+--header 'Content-Type: text/plain' \
+--data-raw 'Message content update!'
+```
