@@ -1,0 +1,15 @@
+name: run_django_tests
+
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Installing Python3 and pip
+      run: sudo apt update && sudo apt install -y python3 python3-pip
+    - name: Install python dependencies
+      run: pip3 install --no-input -r requirements.txt
+    - name: Run tests
+      working-directory: ./app
+      run: export SECRET_KEY="${{ secrets.SECRET_KEY }}" && python3 manage.py test
