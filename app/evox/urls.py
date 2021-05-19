@@ -22,6 +22,6 @@ from evox_messages.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/message/new', message_new),
-    path('api/message/<int:id>', message_dispatcher),
+    path('api/messages/', message_new),
+    path('api/messages/<int:id>', message_dispatcher),
 ]
