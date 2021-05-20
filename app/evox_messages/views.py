@@ -46,7 +46,7 @@ def message_edit(request, id: int):
     try:
         request_body = request.body.decode('utf-8')
         message_obj = json.loads(request_body)
-        message_content = message_obj['message']
+        message_content = message_obj['content']
         message = Message.retrieve_by_id(id)
         message.content = message_content
         message.view_count = 0
@@ -59,11 +59,11 @@ def message_edit(request, id: int):
         detail = str(e)
         err_status = status.HTTP_400_BAD_REQUEST
     except KeyError as e:
-        short = 'Message field not found.'
+        short = '\'content\' field not found.'
         detail = str(e)
         err_status = status.HTTP_400_BAD_REQUEST
     except ValidationError as e:
-        short = 'Message validation failed.'
+        short = 'Content validation failed.'
         detail = e.message_dict['content'][0]
         err_status = status.HTTP_422_UNPROCESSABLE_ENTITY
     return error_response(short, detail, err_status)
@@ -90,7 +90,7 @@ def message_new(request):
     try:
         request_body = request.body.decode('utf-8')
         message_obj = json.loads(request_body)
-        message_content = message_obj['message']
+        message_content = message_obj['content']
         message = Message(content=message_content)
         message.validate_message()
         message.save()
@@ -101,11 +101,11 @@ def message_new(request):
         detail = str(e)
         err_status = status.HTTP_400_BAD_REQUEST
     except KeyError as e:
-        short = 'Message field not found.'
+        short = '\'content\' field not found.'
         detail = str(e)
         err_status = status.HTTP_400_BAD_REQUEST
     except ValidationError as e:
-        short = 'Message validation failed.'
+        short = 'Content validation failed.'
         detail = e.message_dict['content'][0]
         err_status = status.HTTP_422_UNPROCESSABLE_ENTITY
     return error_response(short, detail, err_status)
