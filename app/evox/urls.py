@@ -25,3 +25,8 @@ urlpatterns = [
     path('api/messages/', message_new),
     path('api/messages/<int:id>', message_dispatcher),
 ]
+
+handler400 = 'evox_messages.views.bad_request'
+handler403 = 'evox_messages.views.permission_denied'
+handler404 = 'evox_messages.views.page_not_found'
+handler500 = 'evox_messages.views.server_error'

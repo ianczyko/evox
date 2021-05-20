@@ -45,7 +45,7 @@ Zapytania modyfikujące wiadomość (widok utworzenia, edycji i usunięcia wiado
 
 ``` json
 {
-    "content": "Treść wiadomości"
+    "content": "Message content"
 }
 ```
 
@@ -54,7 +54,7 @@ Każde poprawne zapytanie zwraca odpowiedź w formacie json zawierającą nastę
 ``` json
 {
     "id": 1,
-    "content": "Treść wiadomości",
+    "content": "Message content",
     "view_count": 0
 }
 ```
@@ -81,22 +81,51 @@ Serwer produkcyjny dla tej aplikacji znajduje się pod adresem [ianczyko-evox.he
 
 Deployment jest ustawiony na automatyczny, po wypchnięciu zmian na to repozytorium zdalne i po pomyślnym przejściu testów jednostkowych w CI GitHub Actions, Heroku buduje aplikację i podmienia z aktualnie działającą (pozostawiając bazę danych nienaruszoną).
 
+### Bezpieczeństwo
+
+Aplikacja przechodzi wszystkie testy bezpieczeństwa dotyczące deploymentu ( [Deployment checklist](https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/ ))
+
+``` shell
+~/app $ python3 manage.py check --deploy
+System check identified no issues (0 silenced).
+```
+
 ## Przykłady użycia API
 
 Przykłady będą wykorzystywać serwer produkcyjny.
-
-### Odczyt wiadomości
-
-TBD
+> W przykładach należy uzupełnić pola `API_KEY` oraz `MESSAGE_ID`
 
 ### Utworzenie wiadomości
 
-TBD
+``` shell
+curl --location --request POST 'https://ianczyko-evox.herokuapp.com/api/messages/' \
+--header 'Authorization: Api-Key <API_KEY>' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "content": "New Message"
+}'
+```
 
 ### Modyfikacja wiadomości
 
-TBD
+``` shell
+curl --location --request PUT 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>' \
+--header 'Authorization: Api-Key <API_KEY>' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "content": "Updated Message"
+}'
+```
 
 ### Usunięcie wiadomości
 
-TBD
+``` shell
+curl --location --request DELETE 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>' \
+--header 'Authorization: Api-Key <API_KEY>'
+```
+
+### Odczyt wiadomości
+
+```shell
+curl --location --request GET 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>'
+```
