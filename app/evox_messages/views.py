@@ -57,11 +57,11 @@ def message_edit(request, id: int):
     except JSONDecodeError as e:
         short = 'Could not validate JSON.'
         detail = str(e)
-        err_status = status.HTTP_422_UNPROCESSABLE_ENTITY
+        err_status = status.HTTP_400_BAD_REQUEST
     except KeyError as e:
         short = 'Message field not found.'
         detail = str(e)
-        err_status = status.HTTP_422_UNPROCESSABLE_ENTITY
+        err_status = status.HTTP_400_BAD_REQUEST
     except ValidationError as e:
         short = 'Message validation failed.'
         detail = e.message_dict['content'][0]
@@ -99,11 +99,11 @@ def message_new(request):
     except JSONDecodeError as e:
         short = 'Could not validate JSON.'
         detail = str(e)
-        err_status = status.HTTP_422_UNPROCESSABLE_ENTITY
+        err_status = status.HTTP_400_BAD_REQUEST
     except KeyError as e:
         short = 'Message field not found.'
         detail = str(e)
-        err_status = status.HTTP_422_UNPROCESSABLE_ENTITY
+        err_status = status.HTTP_400_BAD_REQUEST
     except ValidationError as e:
         short = 'Message validation failed.'
         detail = e.message_dict['content'][0]
