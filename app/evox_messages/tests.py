@@ -1,3 +1,5 @@
+import json
+from rest_framework_api_key.models import APIKey
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,7 +12,6 @@ class MessageModelTestCase(TestCase):
         Message.objects.create(content='msg2')
 
     def test_init(self):
-        """Message model creation"""
         msg1 = Message.objects.get(pk=1)
         msg2 = Message.objects.get(pk=2)
         self.assertEqual(msg1.content, 'msg1')
@@ -38,3 +39,173 @@ class MessageModelTestCase(TestCase):
 
     def test_retrieve_by_id_fail(self):
         self.assertRaises(ObjectDoesNotExist, Message.retrieve_by_id, id=5)
+
+
+class MessageAPIShowViewTestCase(TestCase):
+    def setUp(self):
+        Message.objects.create(content='msg1')
+
+    def test_ok_status(self):
+        response = self.client.get('/api/messages/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_nonexisting_id_status(self):
+        response = self.client.get('/api/messages/5')
+        self.assertEqual(response.status_code, 404)
+
+    def test_response_content(self):
+        response = self.client.get('/api/messages/1')
+        message_obj_str = response.content.decode('utf-8')
+        message_obj = json.loads(message_obj_str)
+        message_content = message_obj['content']
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(message_content, 'msg1')
+
+
+class MessageAPIEditMessageViewTestCase(TestCase):
+    def setUp(self):
+        Message.objects.create(content='msg1')
+        _, key = APIKey.objects.create_key(name="test_key")
+        self._api_key = f'Api-Key {key}'
+
+    def test_ok_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.put(
+            '/api/messages/1',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_no_auth_key_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.put(
+            '/api/messages/1',
+            data,
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_wrong_auth_key_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.put(
+            '/api/messages/1',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION='secret123'
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_nonexisting_id_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.put(
+            '/api/messages/5',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_response_content(self):
+        data = '{"content": "msg2"}'
+        response = self.client.put(
+            '/api/messages/1',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        message_obj_str = response.content.decode('utf-8')
+        message_obj = json.loads(message_obj_str)
+        message_content = message_obj['content']
+        self.assertEqual(message_content, 'msg2')
+
+
+class MessageAPINewViewTestCase(TestCase):
+    def setUp(self):
+        Message.objects.create(content='msg1')
+        _, key = APIKey.objects.create_key(name="test_key")
+        self._api_key = f'Api-Key {key}'
+
+    def test_ok_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.post(
+            '/api/messages/',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_no_auth_key_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.post(
+            '/api/messages/',
+            data,
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_wrong_auth_key_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.post(
+            '/api/messages/',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION='secret123'
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_response_content(self):
+        data = '{"content": "msg2"}'
+        response = self.client.post(
+            '/api/messages/',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        message_obj_str = response.content.decode('utf-8')
+        message_obj = json.loads(message_obj_str)
+        message_content = message_obj['content']
+        self.assertEqual(message_content, 'msg2')
+
+
+class MessageAPIDeleteViewTestCase(TestCase):
+    def setUp(self):
+        Message.objects.create(content='msg1')
+        Message.objects.create(content='msg2')
+        Message.objects.create(content='msg3')
+        Message.objects.create(content='msg4')
+        Message.objects.create(content='msg5')
+        _, key = APIKey.objects.create_key(name="test_key")
+        self._api_key = f'Api-Key {key}'
+
+    def test_ok_status(self):
+        response = self.client.delete(
+            '/api/messages/1',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_no_auth_key_status(self):
+        response = self.client.delete(
+            '/api/messages/2',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_wrong_auth_key_status(self):
+        response = self.client.delete(
+            '/api/messages/3',
+            HTTP_AUTHORIZATION='secret123'
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_response_content(self):
+        response = self.client.delete(
+            '/api/messages/4',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        message_obj_str = response.content.decode('utf-8')
+        message_obj = json.loads(message_obj_str)
+        message_content = message_obj['content']
+        self.assertEqual(message_content, 'msg4')
