@@ -23,10 +23,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ['SECRET_KEY']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# Development config
+DEBUG = True
+ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS = ['ianczyko-evox.herokuapp.com']
+# Production config (Host specific config is located at the bottom)
+if 'IS_DEPLOYMENT' in os.environ:
+    DEBUG = False
+    SECURE_HSTS_SECONDS = 864000  # 10 days
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 
 # Application definition
@@ -53,15 +62,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-# TODO: change to much larger once you're confident HTTPS works ok
-SECURE_HSTS_SECONDS = 3600
-
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_PRELOAD = True
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 ROOT_URLCONF = 'evox.urls'
 
@@ -142,5 +142,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Activate Django-Heroku.
 if 'DEPLOYMENT_HEROKU' in os.environ:
+    ALLOWED_HOSTS = ['ianczyko-evox.herokuapp.com']
     import django_heroku
     django_heroku.settings(locals())
