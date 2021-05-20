@@ -118,3 +118,31 @@ def error_response(short, detail, err_status):
             'detail': detail,
         }
     }, status=err_status)
+
+
+def bad_request(request, exception):
+    short = '400 Bad Request.'
+    detail = 'See API documentation at https://github.com/ianczyko/evox#readme'
+    err_status = status.HTTP_400_BAD_REQUEST
+    return error_response(short, detail, err_status)
+
+
+def permission_denied(request, exception):
+    short = '403 Forbidden.'
+    detail = 'See API documentation at https://github.com/ianczyko/evox#readme'
+    err_status = status.HTTP_403_FORBIDDEN
+    return error_response(short, detail, err_status)
+
+
+def page_not_found(request, exception):
+    short = '404 not found.'
+    detail = 'See API documentation at https://github.com/ianczyko/evox#readme'
+    err_status = status.HTTP_404_NOT_FOUND
+    return error_response(short, detail, err_status)
+
+
+def server_error(request, *args, **argv):
+    short = '500 Internal server error.'
+    detail = 'Administrator contact: https://github.com/ianczyko/evox'
+    err_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+    return error_response(short, detail, err_status)
