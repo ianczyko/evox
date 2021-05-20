@@ -54,6 +54,10 @@ def message_edit(request, id: int):
         message.save()
         output = model_to_dict(message)
         return JsonResponse(output)
+    except ObjectDoesNotExist as e:
+        short = f'Message with id #{id} has not been found.'
+        detail = str(e)
+        err_status = status.HTTP_404_NOT_FOUND
     except JSONDecodeError as e:
         short = 'Could not validate JSON.'
         detail = str(e)
