@@ -54,6 +54,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# TODO: change to much larger once you're confident HTTPS works ok
+SECURE_HSTS_SECONDS = 3600
+
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 ROOT_URLCONF = 'evox.urls'
 
 TEMPLATES = [

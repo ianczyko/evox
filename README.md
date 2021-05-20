@@ -41,7 +41,13 @@ python3 manage.py runserver
 
 ### Format zapytań i odpowiedzi
 
-Zapytania modyfikujące wiadomość (widok utworzenia, edycji i usunięcia wiadomości) muszą zawierać Wiadomość czyli umieszczony w BODY niepusty string o maksymalnym rozmiarze 160 znaków. Wykorzustując *curl*, wiadomość może zostać przekazana poprzez: `--data-raw 'Treść wiadomości'`
+Zapytania modyfikujące wiadomość (widok utworzenia, edycji i usunięcia wiadomości) muszą zawierać wiadomość umieszczoną w BODY w formacie json: 
+
+``` json
+{
+    "content": "Treść wiadomości"
+}
+```
 
 Każde poprawne zapytanie zwraca odpowiedź w formacie json zawierającą następujące pola:
 
@@ -49,7 +55,7 @@ Każde poprawne zapytanie zwraca odpowiedź w formacie json zawierającą nastę
 {
     "id": 1,
     "content": "Treść wiadomości",
-    "view_count": 25
+    "view_count": 0
 }
 ```
 
@@ -81,34 +87,16 @@ Przykłady będą wykorzystywać serwer produkcyjny.
 
 ### Odczyt wiadomości
 
-``` shell
-curl --location --request GET 'https://ianczyko-evox.herokuapp.com/api/messages/1'
-```
-Lub wyświetlając link w przeglądarce: [ianczyko-evox.herokuapp.com/api/messages/1](https://ianczyko-evox.herokuapp.com/api/messages/1)
+TBD
 
 ### Utworzenie wiadomości
 
-``` shell
-curl --location --request POST 'https://ianczyko-evox.herokuapp.com/api/messages/' \
---header 'Authorization: Api-Key <API_KEY>' \
---header 'Content-Type: text/plain' \
---data-raw 'New message content!'
-```
+TBD
 
 ### Modyfikacja wiadomości
 
-``` shell
-curl --location --request PUT 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>' \
---header 'Authorization: Api-Key <API_KEY>' \
---header 'Content-Type: text/plain' \
---data-raw 'Message content update!'
-```
+TBD
 
 ### Usunięcie wiadomości
 
-``` shell
-curl --location --request DELETE 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>' \
---header 'Authorization: Api-Key <API_KEY>' \
---header 'Content-Type: text/plain' \
---data-raw 'Message content update!'
-```
+TBD
