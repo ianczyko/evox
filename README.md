@@ -101,9 +101,7 @@ Przykłady będą wykorzystywać serwer produkcyjny.
 curl --location --request POST 'https://ianczyko-evox.herokuapp.com/api/messages/' \
 --header 'Authorization: Api-Key <API_KEY>' \
 --header 'Content-Type: application/json' \
---data-raw '{
-    "content": "New Message"
-}'
+--data-raw '{"content": "New Message"}'
 ```
 
 ### Modyfikacja wiadomości
@@ -112,9 +110,7 @@ curl --location --request POST 'https://ianczyko-evox.herokuapp.com/api/messages
 curl --location --request PUT 'https://ianczyko-evox.herokuapp.com/api/messages/<MESSAGE_ID>' \
 --header 'Authorization: Api-Key <API_KEY>' \
 --header 'Content-Type: application/json' \
---data-raw '{
-    "content": "Updated Message"
-}'
+--data-raw '{"content": "Updated Message"}'
 ```
 
 ### Usunięcie wiadomości
