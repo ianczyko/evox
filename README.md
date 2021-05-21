@@ -21,6 +21,12 @@ Lokalne uruchomienie na [localhost:8000](http://localhost:8000/)
 python3 manage.py runserver
 ```
 
+### Uruchomienie testów jednostkowoych
+
+``` shell
+python3 manage.py test
+```
+
 ## API
 
 ### Lista endpointów
@@ -52,6 +58,17 @@ Każde poprawne zapytanie zwraca odpowiedź w formacie json zawierającą nastę
 }
 ```
 
+Każde błędne zapytanie zwraca stosowny kod błędu oraz odpowiedź w następującym formacie:
+
+``` json
+{
+    "error": {
+        "short": "Human-readable error message",
+        "detail": "Additional information e.g. validator output "
+    }
+}
+```
+
 ### Uwierzytelnienie
 
 Aby korzystać z modyfikujących wiadomości widoków należy posiadać `API key` . Należy zamieścić go w headerze w następujący sposób:
@@ -63,6 +80,32 @@ Aby korzystać z modyfikujących wiadomości widoków należy posiadać `API key
 ```
 
 `API key` są generowane z panelu administratora, może ich być wiele, oraz można każdemu przypisać czas wygaśnięcia.
+
+## Implementacja
+
+### Wybrane szczegóły implementacyjne
+#### Licznik wyświetleń
+
+Licznik wyświetleń został napisany z myślą o dużej ilości zapytań i współbieżności. Wyścigi są unikane za pomocą wykorzystania [wyrażenia F](https://docs.djangoproject.com/en/3.2/ref/models/expressions/#f-expressions).
+
+```py
+message.view_count = F('view_count') + 1
+```
+
+#### Uwierzytelnienie
+
+Jako model uwierzytelnienia został wybrany model prywatnego klucza dostępu `API key`. Implementacja polegała na wykorzystaniu [Django REST framework](https://www.django-rest-framework.org/) wraz z [Django REST Framework API Key](https://florimondmanca.github.io/djangorestframework-api-key/). Deklarowanie widoków wymagających uwierzytelnienia wygląda następująco:
+
+```py
+@api_view(['POST'])
+@permission_classes([HasAPIKey])
+def message_new(request):
+    ...
+```
+
+### Testy jednostkowe
+
+API posiada komplet testów jednostkowych sprawdzających poprawność działania każdego endpointu oraz pomocniczych funkcji/klas. Testy są wykonywane na tymczasowej bazie danych i testowym kliencie udającym klienta http (wszystko jest wbudowane w framework [django.test](https://docs.djangoproject.com/en/3.2/topics/testing/tools/)).
 
 ## Deployment
 
