@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_api_key.permissions import HasAPIKey
+from rest_framework.views import exception_handler
 from rest_framework import status
 from evox_messages.models import Message
 
@@ -151,4 +152,17 @@ def server_error(request, *args, **argv):
     short = '500 Internal server error.'
     detail = 'Administrator contact: https://github.com/ianczyko/evox'
     err_status = status.HTTP_500_INTERNAL_SERVER_ERROR
+    return error_response(short, detail, err_status)
+
+
+def rest_framework_exception_handler(exc, context):
+    response = exception_handler(exc, context)
+    if response is None:
+        return server_error(None)
+    short = response.data['detail']
+    err_status = response.status_code
+    detail = 'See API documentation at https://github.com/ianczyko/evox#readme'
+    # Update specific unclear details
+    if short == 'Authentication credentials were not provided.':
+        short = 'Unset or invalid Authentication credentials'
     return error_response(short, detail, err_status)
