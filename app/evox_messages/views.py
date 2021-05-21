@@ -11,14 +11,16 @@ from rest_framework import status
 from evox_messages.models import Message
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def message_dispatcher(request, id: int):
+@api_view(['GET', 'PUT', 'DELETE', 'POST'])
+def message_dispatcher(request, id=None):
     if request.method == 'GET':
         return message_show(request._request, id)
     if request.method == 'PUT':
         return message_edit(request._request, id)
     if request.method == 'DELETE':
         return message_delete(request._request, id)
+    if request.method == 'POST':
+        return message_new(request._request)
 
 
 @api_view(['GET'])

@@ -15,14 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from evox_messages.views import (
-    message_new,
-    message_dispatcher
-)
+from evox_messages.views import message_dispatcher
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/messages/', message_new),
+    path('api/messages/', message_dispatcher),
     path('api/messages/<int:id>', message_dispatcher),
 ]
 
