@@ -53,6 +53,10 @@ class MessageAPIShowViewTestCase(TestCase):
         response = self.client.get('/api/messages/5')
         self.assertEqual(response.status_code, 404)
 
+    def test_not_allowed_method_status(self):
+        response = self.client.post('/api/messages/1')
+        self.assertEqual(response.status_code, 405)
+
     def test_response_content(self):
         response = self.client.get('/api/messages/1')
         message_obj_str = response.content.decode('utf-8')
@@ -107,6 +111,16 @@ class MessageAPIEditMessageViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
+    def test_not_allowed_method_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.post(
+            '/api/messages/1',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        self.assertEqual(response.status_code, 405)
+
     def test_response_content(self):
         data = '{"content": "msg2"}'
         response = self.client.put(
@@ -156,6 +170,10 @@ class MessageAPINewViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+    def test_not_allowed_method_status(self):
+        response = self.client.get('/api/messages/',)
+        self.assertEqual(response.status_code, 405)
+
     def test_response_content(self):
         data = '{"content": "msg2"}'
         response = self.client.post(
@@ -199,6 +217,16 @@ class MessageAPIDeleteViewTestCase(TestCase):
             HTTP_AUTHORIZATION='secret123'
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_not_allowed_method_status(self):
+        data = '{"content": "msg2"}'
+        response = self.client.post(
+            '/api/messages/3',
+            data,
+            content_type='application/json',
+            HTTP_AUTHORIZATION=self._api_key
+        )
+        self.assertEqual(response.status_code, 405)
 
     def test_response_content(self):
         response = self.client.delete(
