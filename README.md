@@ -40,7 +40,7 @@ python3 manage.py test
 
 ### Format zapytań i odpowiedzi
 
-Zapytania modyfikujące wiadomość (widok utworzenia i edycji wiadomości) muszą zawierać wiadomość umieszczoną w BODY w formacie json: 
+Zapytania modyfikujące treść wiadomości (widok tworzenia i edycji wiadomości) muszą zawierać wiadomość umieszczoną w BODY w formacie json: 
 
 ``` json
 {
@@ -71,7 +71,7 @@ Każde błędne zapytanie zwraca stosowny kod błędu oraz odpowiedź w następu
 
 ### Uwierzytelnienie
 
-Aby korzystać z modyfikujących wiadomości widoków należy posiadać `API key` . Należy zamieścić go w headerze w następujący sposób:
+Aby korzystać z modyfikujących wiadomości widoków należy posiadać `API key`. Należy zamieścić go w headerze w następujący sposób:
 
 ``` json
 {
@@ -79,7 +79,7 @@ Aby korzystać z modyfikujących wiadomości widoków należy posiadać `API key
 }
 ```
 
-`API key` są generowane z panelu administratora, może ich być wiele, oraz można każdemu przypisać czas wygaśnięcia.
+`API key` są generowane w panelu administratora, może ich być wiele, oraz można każdemu przypisać czas wygaśnięcia.
 
 ## Implementacja
 
@@ -109,7 +109,7 @@ API posiada komplet testów jednostkowych sprawdzających poprawność działani
 
 ## Deployment
 
-Serwer produkcyjny dla tej aplikacji znajduje się pod adresem [ianczyko-evox.herokuapp.com](https://ianczyko-evox.herokuapp.com/ )
+Serwer produkcyjny dla tej aplikacji znajduje się pod adresem `ianczyko-evox.herokuapp.com` ([Przykładowa wiadomość](https://ianczyko-evox.herokuapp.com/api/messages/1))
 
 > Uwaga, serwer jest usypiany po 30 minutowej bezczynności, dlatego pierwsze zapytanie może potrwać chwilę dłużej.
 
@@ -130,7 +130,7 @@ System check identified no issues (0 silenced).
 
 Aplikacja wykorzystuje następujące zmienne środowiskowe:
 
-* SECRET_KEY - wykorzystywany wewnętrznie przez Django do operacji kryptograficznych klucz prywatny ([SECRET_KEY](https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-SECRET_KEY ))
+* SECRET_KEY - wykorzystywany wewnętrznie przez Django do operacji kryptograficznych klucz prywatny ([Dokumentacja SECRET_KEY](https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-SECRET_KEY ))
 * IS_DEPLOYMENT - ustawienie zmiennej powoduje konfigurację produkcyjną tj. spełniającą reguły bezpieczeństwa opisane w [Deployment checklist](https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/ )
 * DEPLOYMENT_HEROKU - ustawienie zmiennej powoduje dodatkową konfigurację specyficzną dla Heroku 
 
