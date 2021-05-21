@@ -84,6 +84,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'evox.wsgi.application'
 
 
+# Rest framework config
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'evox_messages.views.rest_framework_exception_handler'
+}
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
