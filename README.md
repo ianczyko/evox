@@ -79,7 +79,7 @@ Aby korzystać z modyfikujących wiadomości widoków należy posiadać `API key
 }
 ```
 
-`API key` są generowane w panelu administratora, może ich być wiele, oraz można każdemu przypisać czas wygaśnięcia.
+`API key` są generowane w panelu administratora, może ich być wiele oraz można każdemu przypisać czas wygaśnięcia.
 
 ## Implementacja
 
