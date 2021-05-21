@@ -13,7 +13,7 @@ from evox_messages.models import Message
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def messages_dispatcher(request, id=None):
+def messages_dispatcher(request, id: int):
     if request.method == 'GET':
         return message_show(request._request, id)
     if request.method == 'PUT':
